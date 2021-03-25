@@ -58,10 +58,10 @@ instruction that stores a value of type `A`, which is the return value of the `C
 Although very simple, this data structure is enough to build an interactive program:
 
 ```java
-final Console<Void> example1=
+final Console<Void> example1 =
         PrintLine.of("Hello! What's your name?",
-        ReadLine.of(name->
-        PrintLine.of("Good to meet you, "+name,Return.of(()->null))));
+                ReadLine.of(name ->
+                        PrintLine.of("Good to meet you, " + name, Return.of(() -> null))));
 ```
 
 This immutable value doesn't do anything—it just describes a program that prints out a message, asks for input, and
@@ -71,25 +71,25 @@ Although this program is just a model, we can translate the model into procedura
 interpreter, which recurses on the data structure, translating every instruction into the side-effect that it describes:
 
 ```java
-<A> A interpret(final Console<A> program){
-        if(program instanceof Return){
-        return((Return<A>)program).value.get();
-        }else if(program instanceof PrintLine){
-final String line=((PrintLine<A>)program).line;
-final Console<A> next=((PrintLine<A>)program).rest;
+<A> A interpret(final Console<A> program) {
+    if (program instanceof Return) {
+        return ((Return<A>) program).value.get();
+    } else if (program instanceof PrintLine) {
+        final String line = ((PrintLine<A>) program).line;
+        final Console<A> next = ((PrintLine<A>) program).rest;
         System.out.println(line);
         return interpret(next);
-        }else if(program instanceof ReadLine){
-final BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
-final Function<String, Console<A>>next=((ReadLine<A>)program).rest;
-        try{
-        return interpret(next.apply(reader.readLine()));
-        }catch(final IOException e){
-        e.printStackTrace();
+    } else if (program instanceof ReadLine) {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final Function<String, Console<A>> next = ((ReadLine<A>) program).rest;
+        try {
+            return interpret(next.apply(reader.readLine()));
+        } catch (final IOException e) {
+            e.printStackTrace();
         }
-        }
-        return null;
-        }
+    }
+    return null;
+}
 ```
 
 Interpreting (also called running or executing) is not functional, because it may be partial, non-deterministic, and
@@ -129,34 +129,34 @@ on `Console`:
 These two methods are defined as follows:
 
 ```java
-<B> Console<B> map(final Function<A, B> f){
-        return flatMap(a->succeed(()->f.apply(a)));
-        }
+<B> Console<B> map(final Function<A, B> f) {
+    return flatMap(a -> succeed(() -> f.apply(a)));
+}
 
-<B> Console<B> flatMap(final Function<A, Console<B>>f){
-        if(this instanceof Return){
-final Supplier<A> value=((Return<A>)this).value;
+<B> Console<B> flatMap(final Function<A, Console<B>> f) {
+    if (this instanceof Return) {
+        final Supplier<A> value = ((Return<A>) this).value;
         return f.apply(value.get());
-        }else if(this instanceof PrintLine){
-final String line=((PrintLine<A>)this).line;
-final Console<A> next=((PrintLine<A>)this).rest;
-        return PrintLine.of(line,next.flatMap(f));
-        }else if(this instanceof ReadLine){
-final Function<String, Console<A>>next=((ReadLine<A>)this).rest;
-        return ReadLine.of(line->next.apply(line).flatMap(f));
-        }
-        return null;
-        }
+    } else if (this instanceof PrintLine) {
+        final String line = ((PrintLine<A>) this).line;
+        final Console<A> next = ((PrintLine<A>) this).rest;
+        return PrintLine.of(line, next.flatMap(f));
+    } else if (this instanceof ReadLine) {
+        final Function<String, Console<A>> next = ((ReadLine<A>) this).rest;
+        return ReadLine.of(line -> next.apply(line).flatMap(f));
+    }
+    return null;
+}
 ```
 
 With these `map` and `flatMap` methods, we can write programs that look like this:
 
 ```java
-final Console<String> example2=
-        printLine("Hello! What's your name?").flatMap(v->
-        readLine().flatMap(name->
-        printLine("Hello, "+name).flatMap(v1->
-        succeed(()->name))));
+final Console<String> example2 =
+        printLine("Hello! What's your name?").flatMap(v ->
+                readLine().flatMap(name ->
+                        printLine("Hello, " + name).flatMap(v1 ->
+                                succeed(() -> name))));
 ```
 
 When we wish to execute this program, we can call `interpret` on the `Console` value.
