@@ -1,15 +1,18 @@
 package com.manenkov.sandbox.programasvalue;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-abstract class Console<A> extends Syntax {
-    protected Console() {
-        super();
-    }
+@EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+abstract class Console<A> {
 
     <B> Console<B> map(final Function<A, B> f) {
-        return flatMap(a -> succeed(() -> f.apply(a)));
+        return flatMap(a -> Syntax.succeed(() -> f.apply(a)));
     }
 
     <B> Console<B> flatMap(final Function<A, Console<B>> f) {

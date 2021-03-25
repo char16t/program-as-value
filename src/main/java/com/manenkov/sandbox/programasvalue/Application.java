@@ -2,23 +2,26 @@ package com.manenkov.sandbox.programasvalue;
 
 import static com.manenkov.sandbox.programasvalue.Syntax.*;
 
-public class Application extends Interpreter {
-    public static void main(String[] args) {
-        new Application().exec();
+public class Application<A> {
+
+    private final Console<A> program;
+    private final Interpreter interpreter;
+
+    public Application(final Console<A> program, final Interpreter interpreter) {
+        this.interpreter = interpreter;
+        this.program = program;
     }
 
-    void exec() {
-        final Console<Void> example1 =
-                PrintLine.of("Hello! What's your name?",
-                        ReadLine.of(name ->
-                                PrintLine.of("Good to meet you, " + name, Return.of(() -> null))));
-
-        final Console<String> example2 =
+    public static void main(final String[] args) {
+        final Console<String> program =
                 printLine("Hello! What's your name?").flatMap(v ->
                         readLine().flatMap(name ->
                                 printLine("Hello, " + name).flatMap(v1 ->
                                         succeed(() -> name))));
+        new Application<>(program, Interpreter.of(System.in, System.out, System.err)).exec();
+    }
 
-        interpret(example2);
+    void exec() {
+        interpreter.interpret(program);
     }
 }
