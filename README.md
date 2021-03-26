@@ -1,3 +1,5 @@
+![bage](https://github.com/char16t/program-as-value/actions/workflows/maven.yml/badge.svg)
+
 It is a simple program that welcomes the user. Literally:
 
 ```
