@@ -1,4 +1,4 @@
-![bage](https://github.com/char16t/program-as-value/actions/workflows/maven.yml/badge.svg)
+![bage](https://github.com/char16t/program-as-value/actions/workflows/maven.yml/badge.svg) [![codecov](https://codecov.io/gh/char16t/program-as-value/branch/master/graph/badge.svg?token=QDTUYRIHOM)](https://codecov.io/gh/char16t/program-as-value)
 
 It is a simple program that welcomes the user. Literally:
 
