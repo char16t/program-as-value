@@ -2,12 +2,10 @@ package com.manenkov.sandbox.programasvalue;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class Console<A> {
 

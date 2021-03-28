@@ -13,7 +13,7 @@ public class Application<A> {
     }
 
     public static void main(final String[] args) {
-        new Application<>(program() , Interpreter.of(System.in, System.out, System.err)).exec();
+        new Application<>(program(), Interpreter.of(System.in, System.out, System.err)).exec();
     }
 
     protected static Console<String> program() {
