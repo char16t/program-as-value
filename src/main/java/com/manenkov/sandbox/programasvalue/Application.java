@@ -13,12 +13,14 @@ public class Application<A> {
     }
 
     public static void main(final String[] args) {
-        final Console<String> program =
-                printLine("Hello! What's your name?").flatMap(v ->
-                        readLine().flatMap(name ->
-                                printLine("Hello, " + name).flatMap(v1 ->
-                                        succeed(() -> name))));
-        new Application<>(program, Interpreter.of(System.in, System.out, System.err)).exec();
+        new Application<>(program() , Interpreter.of(System.in, System.out, System.err)).exec();
+    }
+
+    protected static Console<String> program() {
+        return printLine("Hello! What's your name?").flatMap(v ->
+                readLine().flatMap(name ->
+                        printLine("Hello, " + name).flatMap(v1 ->
+                                succeed(() -> name))));
     }
 
     void exec() {
